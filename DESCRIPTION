@@ -1,5 +1,5 @@
-Package: DYNMO
-Title: Dynamic Linear Models for Football
+Package: FootStats
+Title: Datasets and Predictive Models for Football
 Version: 1.0.0
 Authors@R: 
     person("Salvador", "Netto", , "salvv.netto@gmail.com", role = c("aut", "cre"))

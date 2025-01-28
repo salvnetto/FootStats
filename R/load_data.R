@@ -11,6 +11,7 @@
 #' @examples
 #' # Load processed match history data for Brazil
 #' df = load_data(region = "br", file = "match_history")
+
 load_data = function(
     region = c("br"),
     file = c("match_history", "standings", "squads")
@@ -29,7 +30,7 @@ load_data = function(
   }
 
   url = paste0(
-    "https://raw.githubusercontent.com/salvnetto/GOALS-Data/main/datasets/",
+    "https://raw.githubusercontent.com/salvnetto/FootStats-Data/main/datasets/",
     data_type, "/",
     league, "/",
     file, ".csv"

@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(DYNMO)
+library(FootStats)
 
-test_check("DYNMO")
+test_check("FootStats")
