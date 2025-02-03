@@ -2,22 +2,45 @@
 % Please edit documentation in R/load_data.R
 \name{load_data}
 \alias{load_data}
-\title{Load Football Data from the repository}
+\title{Load Football Data from the Repository}
 \usage{
-load_data(region = c("br"), file = c("match_history", "standings", "squads"))
+load_data(country, league, file = "match_history")
 }
 \arguments{
-\item{region}{A character string indicating the region. Valid options are "br".}
+\item{country}{A character string specifying the country of the league. Must be one of the following:
+\itemize{
+\item "brazil"
+\item "england"
+\item "spain"
+\item "italy"
+\item "germany"
+}}
 
-\item{file}{A character string specifying the data file to load. Options include "match_history", "standings", and "squads".}
+\item{league}{A character string specifying the league within the chosen country. Valid options per country:
+\itemize{
+\item \strong{brazil}: "brasileirao_a", "brasileirao_b"
+\item \strong{england}: "premier_league"
+\item \strong{spain}: "laliga"
+\item \strong{italy}: "serie_a"
+\item \strong{germany}: "bundesliga"
+}}
+
+\item{file}{A character string indicating the type of data file to load. Valid options include "match_history" and "squad".}
 }
 \value{
-A data frame containing the football data.
+A data frame containing the requested football data.
 }
 \description{
-This function loads football data from the repository on GitHub based on region, file type, and data processing preference.
+This function retrieves football data from an online repository based on the selected country, league, and data file type.
+}
+\details{
+The function constructs a URL to retrieve the selected dataset from the repository and attempts to load the data into a data frame.
 }
 \examples{
-# Load processed match history data for Brazil
-df = load_data(region = "br", file = "match_history")
+# Load processed match history data for Brazil's Série A
+df <- load_data(country = "brazil", league = "brasileirao_a", file = "match_history")
+
+# Load squad data for the English Premier League
+df <- load_data(country = "england", league = "premier_league", file = "squad")
+
 }

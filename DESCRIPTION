@@ -3,7 +3,7 @@ Title: Datasets and Predictive Models for Football
 Version: 1.0.0
 Authors@R: 
     person("Salvador", "Netto", , "salvv.netto@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: The FootStats package facilitates game outcome analysis using statistical learning techniques. It is designed for modeling and predicting football match results based on various statistical features.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -12,4 +12,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
+    dplyr,
+    httr,
+    jsonlite,
     utils
