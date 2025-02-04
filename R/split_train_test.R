@@ -37,7 +37,9 @@ split_train_test = function(df, season, rounds_train) {
     stop(paste("'rounds_train' must be between", min_round, "and", max_round))
   }
 
-  unique_teams = unique(c(df$team_name, df$opponent))
+  df_unique = df %>%
+    dplyr::filter(season == season_filter)
+  unique_teams = unique(c(df_unique$team_name, df_unique$opponent))
 
   df = df %>%
     dplyr::mutate(
