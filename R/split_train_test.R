@@ -50,7 +50,7 @@ split_train_test = function(df, season, rounds_train) {
     dplyr::filter(season == season_filter)
 
   r_train = 1:rounds_train
-  r_test = rounds_train:max(df$round)
+  r_test = (rounds_train+1):max(df$round)
 
   df_train = df %>%
     dplyr::filter(round %in% r_train)
