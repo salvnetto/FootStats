@@ -3,7 +3,7 @@
 #' This function splits a sports dataset into training and testing sets based on
 #' specified season and rounds, with home venue filtering and team indexing.
 #'
-#' @param df A data frame containing sports match data from load_data()
+#' @param data A data frame containing sports match data from load_data()
 #' @param season The specific season to filter data from (must be a character)
 #' @param rounds_train A vector of rounds to use for training data
 #'
@@ -12,7 +12,7 @@
 #' @examples
 #' \dontrun{
 #' result <- split_train_test(
-#'   df = match_data,
+#'   data = match_data,
 #'   season = '2022-2023',
 #'   rounds_train = 19
 #' )
@@ -22,47 +22,36 @@
 #'
 #' @export
 
-split_train_test = function(df, season, rounds_train) {
-  available_seasons = unique(as.character(df$season))
-  season_filter = match.arg(season, available_seasons)
+split_train_test <- function(data, season, rounds_train) {
+  available_seasons <- unique(as.character(data$season))
+  season_filter <- match.arg(season, available_seasons)
 
   if (!is.numeric(rounds_train)) {
     stop("'rounds_train' must be numeric.")
   }
 
-  min_round <- min(df$round)
-  max_round <- max(df$round)
+  min_round <- min(data$round, na.rm = TRUE)
+  max_round <- max(data$round, na.rm = TRUE)
 
   if (rounds_train < min_round || rounds_train > max_round) {
     stop(paste("'rounds_train' must be between", min_round, "and", max_round))
   }
 
-  df_unique = df %>%
-    dplyr::filter(season == season_filter)
-  unique_teams = unique(c(df_unique$team_name, df_unique$opponent))
+  data_unique <- data[data$season == season_filter, ]
+  unique_teams <- unique(c(data_unique$team_name, data_unique$opponent))
 
-  df = df %>%
-    dplyr::mutate(
-      venue = ifelse(venue == 'Home', 1, 0),
-      team_name_idx = match(team_name, unique_teams),
-      opponent_idx = match(opponent, unique_teams),
-      season = as.character(season)
-    ) %>%
-    dplyr::filter(venue == 1) %>%
-    dplyr::filter(season == season_filter)
+  data$venue <- ifelse(data$venue == "Home", 1, 0)
+  data$team_name_idx <- match(data$team_name, unique_teams)
+  data$opponent_idx <- match(data$opponent, unique_teams)
+  data$season <- as.character(data$season)
 
-  r_train = 1:rounds_train
-  r_test = (rounds_train+1):max(df$round)
+  data <- data[data$venue == 1 & data$season == season_filter, ]
 
-  df_train = df %>%
-    dplyr::filter(round %in% r_train)
-  df_test = df %>%
-    dplyr::filter(round %in% r_test)
+  r_train <- seq_len(rounds_train)
+  r_test <- seq(rounds_train + 1, max(data$round, na.rm = TRUE))
 
-  return(
-    list(
-      train = df_train,
-      test = df_test
-    )
-  )
+  data_train <- data[data$round %in% r_train, ]
+  data_test <- data[data$round %in% r_test, ]
+
+  return(list(train = data_train, test = data_test))
 }
