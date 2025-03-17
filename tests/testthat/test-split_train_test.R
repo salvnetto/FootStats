@@ -1,5 +1,3 @@
-library(dplyr)
-
 # Mock data for testing
 create_mock_data <- function() {
   data.frame(

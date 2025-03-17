@@ -4,10 +4,10 @@
 \alias{split_train_test}
 \title{Split Dataset into Training and Testing Sets for Sports Analytics}
 \usage{
-split_train_test(df, season, rounds_train)
+split_train_test(data, season, rounds_train)
 }
 \arguments{
-\item{df}{A data frame containing sports match data from load_data()}
+\item{data}{A data frame containing sports match data from load_data()}
 
 \item{season}{The specific season to filter data from (must be a character)}
 
@@ -23,7 +23,7 @@ specified season and rounds, with home venue filtering and team indexing.
 \examples{
 \dontrun{
 result <- split_train_test(
-  df = match_data,
+  data = match_data,
   season = '2022-2023',
   rounds_train = 19
 )
