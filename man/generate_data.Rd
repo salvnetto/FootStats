@@ -41,7 +41,7 @@ The model requires a set of parameters to generate the goals for each team.
   )
   my_team_names = c("Team_name1", "Team_name2")
   gen_data <- generate_data(
-    num_teams = 2, model = "poisson", 
+    num_teams = 2, model = "poisson",
     params = my_params, team_names = my_team_names
   )
   print(gen_data$params)

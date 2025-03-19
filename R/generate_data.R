@@ -29,7 +29,7 @@
 #'   )
 #'   my_team_names = c("Team_name1", "Team_name2")
 #'   gen_data <- generate_data(
-#'     num_teams = 2, model = "poisson", 
+#'     num_teams = 2, model = "poisson",
 #'     params = my_params, team_names = my_team_names
 #'   )
 #'   print(gen_data$params)
@@ -76,7 +76,11 @@ generate_data <- function(num_teams, model, params, team_names = NULL) {
   games$goals_away <- model_params$goals_away
 
   ## rearrange column order
-  games <- games[, c("home_index", "home_team", "goals_home", "goals_away", "away_team", "away_index")]
+  if (!is.null(team_names)){
+    games <- games[, c("home_index", "home_team", "goals_home", "goals_away", "away_team", "away_index")]
+  } else {
+    games <- games[, c("home_index", "goals_home", "goals_away", "away_index")]
+  }
 
   output <- list(
     data = games,
