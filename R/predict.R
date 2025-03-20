@@ -36,6 +36,8 @@ predict <- function(test_data, draws) {
   test_data$home_win <- NA
   test_data$draw <- NA
   test_data$home_lost <- NA
+  test_data$lambda_home <- NA
+  test_data$lambda_away <- NA
 
   for (i in 1:nrow(test_data)) {
     x <- posterior::draws_of(draws$gf_new)[, i]
@@ -47,8 +49,8 @@ predict <- function(test_data, draws) {
     test_data$draw[i] <- sum(x == y) / n_preds
     test_data$home_lost[i] <- sum(x < y) / n_preds
 
-    test_data$lambda_home[i] <- posterior::draws_of(draws$theta1)[, i]
-    test_data$lambda_away[i] <- posterior::draws_of(draws$theta2)[, i]
+    test_data$lambda_home[i] <- mean(exp(posterior::draws_of(draws$theta1_new)[, i]))
+    test_data$lambda_away[i] <- mean(exp(posterior::draws_of(draws$theta2_new)[, i]))
   }
 
   max_vals <- pmax(test_data$home_win, test_data$draw, test_data$home_lost)
