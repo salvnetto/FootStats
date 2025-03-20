@@ -36,24 +36,28 @@ predict <- function(test_data, draws) {
   test_data$home_win <- NA
   test_data$draw <- NA
   test_data$home_lost <- NA
-  
+
   for (i in 1:nrow(test_data)) {
     x <- posterior::draws_of(draws$gf_new)[, i]
     y <- posterior::draws_of(draws$ga_new)[, i]
+
     n_preds <- length(x)
-    
+
     test_data$home_win[i] <- sum(x > y) / n_preds
     test_data$draw[i] <- sum(x == y) / n_preds
     test_data$home_lost[i] <- sum(x < y) / n_preds
+
+    test_data$lambda_home[i] <- posterior::draws_of(draws$theta1)[, i]
+    test_data$lambda_away[i] <- posterior::draws_of(draws$theta2)[, i]
   }
-  
+
   max_vals <- pmax(test_data$home_win, test_data$draw, test_data$home_lost)
   test_data$result_predicted <- ifelse(
     test_data$home_win == max_vals, "W",
     ifelse(test_data$draw == max_vals, "D", "L")
   )
-  
+
   test_data$success <- as.integer(test_data$result_predicted == test_data$result)
-  
+
   return(test_data)
 }

@@ -24,7 +24,7 @@
 
 split_train_test <- function(data, season, rounds_train) {
   available_seasons <- unique(as.character(data$season))
-  season_filter <- match.arg(season, available_seasons)
+  season_filter <- match.arg(as.character(season), available_seasons)
 
   if (!is.numeric(rounds_train)) {
     stop("'rounds_train' must be numeric.")
@@ -37,15 +37,10 @@ split_train_test <- function(data, season, rounds_train) {
     stop(paste("'rounds_train' must be between", min_round, "and", max_round))
   }
 
-  data_unique <- data[data$season == season_filter, ]
-  unique_teams <- unique(c(data_unique$team_name, data_unique$opponent))
-
   data$venue <- ifelse(data$venue == "Home", 1, 0)
-  data$team_name_idx <- match(data$team_name, unique_teams)
-  data$opponent_idx <- match(data$opponent, unique_teams)
   data$season <- as.character(data$season)
 
-  data <- data[data$venue == 1 & data$season == season_filter, ]
+  data <- data[data$venue == 1 & as.character(data$season) == season_filter, ]
 
   r_train <- seq_len(rounds_train)
   r_test <- seq(rounds_train + 1, max(data$round, na.rm = TRUE))
