@@ -66,7 +66,7 @@ score <- function(df) {
 #' 
 #' # Run with actual data
 #' expected_results(test_data, favorite = "home")
-expected_results <- function(df, favorite = NULL) {
+expected_results <- function(df, favorite = "none") {
   df$favorite <- if (favorite == "home") {
     ifelse(df$home_win > df$home_lost, 1, 
            ifelse(df$home_win < df$home_lost, 0, 1))
