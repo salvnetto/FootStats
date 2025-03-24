@@ -15,4 +15,7 @@ Imports:
     httr,
     jsonlite,
     utils,
-    posterior
+    posterior,
+    caret,
+    bayesplot,
+    ggplot2

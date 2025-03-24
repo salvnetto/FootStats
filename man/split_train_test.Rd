@@ -4,7 +4,13 @@
 \alias{split_train_test}
 \title{Split Dataset into Training and Testing Sets for Sports Analytics}
 \usage{
-split_train_test(data, season, rounds_train)
+split_train_test(
+  data,
+  season,
+  rounds_train,
+  include_seasons = NULL,
+  gen_data = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame containing sports match data from load_data()}
@@ -12,6 +18,10 @@ split_train_test(data, season, rounds_train)
 \item{season}{The specific season to filter data from (must be a character)}
 
 \item{rounds_train}{A vector of rounds to use for training data}
+
+\item{include_seasons}{A vector of other seasons to include in the training data}
+
+\item{gen_data}{If the data frame is from generate_data}
 }
 \value{
 A list containing two data frames: train and test
@@ -25,7 +35,8 @@ specified season and rounds, with home venue filtering and team indexing.
 result <- split_train_test(
   data = match_data,
   season = '2022-2023',
-  rounds_train = 19
+  rounds_train = 19,
+  include_seasons = c('2021-2022', '2020-2021')
 )
 train_data <- result$train
 test_data <- result$test

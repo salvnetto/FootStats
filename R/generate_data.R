@@ -42,6 +42,9 @@ generate_data <- function(num_teams, model, params, team_names = NULL) {
   if (!is.numeric(num_teams) || num_teams < 1) {
     stop("'num_teams' must be numeric and bigger than 1.")
   }
+  if (num_teams %% 2 != 0) {
+    stop("'num_teams' must be even, not odd.")
+  }
   if (!is.list(params)) {
     stop("'params' must be a list.")
   }
@@ -53,39 +56,80 @@ generate_data <- function(num_teams, model, params, team_names = NULL) {
       stop("'team_names' must be a vector of the same length as 'num_teams'.")
     }
   }
-
+  
+  # Generate fixture schedule with proper rounds
+  fixture_schedule <- generate_fixtures(num_teams)
+  
+  # Create games dataframe from fixture schedule
   games <- data.frame(
-    home_index = rep(1:num_teams, each = num_teams),
-    away_index = rep(1:num_teams, times = num_teams)
+    home_index = fixture_schedule$Home,
+    away_index = fixture_schedule$Away,
+    round = fixture_schedule$Round
   )
-
-  games <- games[games$home_index != games$away_index, ]
-
-  if (!is.null(team_names)){
-    games$home_team <- team_names[games$home]
-    games$away_team <- team_names[games$away]
+  
+  # Add team names if provided
+  if (!is.null(team_names)) {
+    games$home_team <- team_names[games$home_index]
+    games$away_team <- team_names[games$away_index]
   }
-
-  ## model based generated goals
-  if (is.character(model))
+  
+  ## Model-based goal generation
+  if (is.character(model)) {
     model <- get(paste0("fs_", model), mode = 'function', envir = asNamespace("FootStats"))
-
+  }
+  
   model_params <- model(params, num_teams, games)
-
+  
+  # Add goals to games dataframe
   games$goals_home <- model_params$goals_home
   games$goals_away <- model_params$goals_away
-
-  ## rearrange column order
-  if (!is.null(team_names)){
-    games <- games[, c("home_index", "home_team", "goals_home", "goals_away", "away_team", "away_index")]
+  
+  # Add metadata columns
+  games$season <- rep('2025', nrow(games))
+  games$venue <- rep(1, nrow(games))  # 1 indicates home venue for the listed home team
+  
+  # Rearrange columns
+  if (!is.null(team_names)) {
+    games <- games[, c("season", "venue", "round", "home_index", "home_team", 
+                       "goals_home", "goals_away", "away_team", "away_index")]
   } else {
-    games <- games[, c("home_index", "goals_home", "goals_away", "away_index")]
+    games <- games[, c("season", "venue", "round", "home_index", 
+                       "goals_home", "goals_away", "away_index")]
   }
-
+  
   output <- list(
     data = games,
     params = model_params
   )
-
+  
   return(output)
+}
+
+# Helper function for fixture generation (internal use)
+generate_fixtures <- function(num_teams) {
+  teams <- 1:num_teams
+  num_rounds <- (num_teams - 1) * 2
+  schedule <- data.frame(Round = integer(), Home = integer(), Away = integer())
+  
+  # First half of season
+  rotating <- teams[-1]
+  for (round in 1:(num_teams - 1)) {
+    matches <- data.frame(Round = round, Home = teams[1], Away = rotating[1])
+    others <- rotating[-1]
+    home_teams <- others[1:(length(others)/2)]
+    away_teams <- rev(others)[1:(length(others)/2)]
+    matches <- rbind(matches, data.frame(Round = round, Home = home_teams, Away = away_teams))
+    schedule <- rbind(schedule, matches)
+    rotating <- c(rotating[-1], rotating[1])
+  }
+  
+  # Second half (reverse fixtures)
+  second_half <- schedule
+  second_half$Round <- second_half$Round + (num_teams - 1)
+  second_half <- data.frame(Round = second_half$Round,
+                            Home = second_half$Away,
+                            Away = second_half$Home)
+  
+  full_schedule <- rbind(schedule, second_half)
+  full_schedule[order(full_schedule$Round), ]
 }
