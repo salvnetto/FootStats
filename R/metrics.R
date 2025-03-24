@@ -263,6 +263,8 @@ plots <- function(draws, df_test) {
   bayesplot::bayesplot_grid(
     plots = list(pgf, pga, pgf_mean, pga_mean),
     titles = c("Goal Distribution Comparison", 
+               "Goal Distribution Comparison",
+               "Mean Goal Comparison",
                "Mean Goal Comparison")
   )
 }
