@@ -18,4 +18,5 @@ Imports:
     posterior,
     caret,
     bayesplot,
-    ggplot2
+    ggplot2,
+    dplyr
