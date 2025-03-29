@@ -97,6 +97,15 @@ generate_data <- function(num_teams, model, params, team_names = NULL) {
                        "goals_home", "goals_away", "away_index")]
   }
   
+  games <- games |> 
+    dplyr::mutate(
+      result = case_when(
+        goals_home > goals_away ~ 'W',
+        goals_home < goals_away ~ 'L',
+        TRUE ~ 'D'
+      ) |> factor()
+    )
+  
   output <- list(
     data = games,
     params = model_params
