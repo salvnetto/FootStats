@@ -4,7 +4,7 @@
 \alias{expected_results}
 \title{Compare Expected vs Actual Results}
 \usage{
-expected_results(df, favorite = NULL)
+expected_results(df, favorite = "none")
 }
 \arguments{
 \item{df}{A data frame containing match results and predictions. Same structure as required for score().}

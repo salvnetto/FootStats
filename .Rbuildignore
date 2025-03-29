@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^DYNMO\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$

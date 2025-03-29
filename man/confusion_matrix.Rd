@@ -4,10 +4,12 @@
 \alias{confusion_matrix}
 \title{Generate Confusion Matrix}
 \usage{
-confusion_matrix(df)
+confusion_matrix(df, type)
 }
 \arguments{
-\item{df}{A data frame containing match results and predictions. Same structure as required for score().}
+\item{df}{A data frame containing match results and predictions.}
+
+\item{type}{Type of the matrix: Binary (Home win or Not), Three-Class (Win, Draw and Lost).}
 }
 \value{
 A confusion matrix object from caret package or contingency table if insufficient data

@@ -16,8 +16,11 @@ fs_poisson <- function(params, num_teams, games) {
 
   intercept = params$intercept
   home = params$home
-  att = stats::rnorm(num_teams, 0, params$sd_att)
-  def = stats::rnorm(num_teams, 0, params$sd_def)
+  att_raw = stats::rnorm(num_teams, 0, params$sd_att)
+  def_raw = stats::rnorm(num_teams, 0, params$sd_def)
+  
+  att = att_raw - mean(att_raw)
+  def = def_raw - mean(def_raw)
 
   theta_home = intercept + att[games$home_index] - def[games$away_index] + home
   theta_away = intercept + att[games$away_index] - def[games$home_index]

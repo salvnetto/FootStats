@@ -151,7 +151,8 @@ real_vs_preview_goals <- function(df) {
 #' 
 #' @description Creates a confusion matrix comparing predicted and actual match outcomes.
 #' 
-#' @param df A data frame containing match results and predictions. Same structure as required for score().
+#' @param df A data frame containing match results and predictions.
+#' @param type Type of the matrix: Binary (Home win or Not), Three-Class (Win, Draw and Lost).
 #' 
 #' @return A confusion matrix object from caret package or contingency table if insufficient data
 #' @export
@@ -168,28 +169,38 @@ real_vs_preview_goals <- function(df) {
 #' 
 #' # Run with actual data
 #' confusion_matrix(test_data)
-confusion_matrix <- function(df) {
-  df$preview <- ifelse(df$home_win > df$home_lost, "WD", "DL")
+confusion_matrix <- function(df, type) {
+  type_arg <- match.arg(type, choices = c("binary", "three-class"))
   
-  df$result <- as.character(df$result)
-  d_condition <- df$result == "D"
-  df$result[d_condition & df$preview == "WD"] <- "WD"
-  df$result[d_condition & df$preview == "DL"] <- "DL"
-  df$result[df$result == "W"] <- "WD"
-  df$result[df$result == "L"] <- "DL"
-  df$result[!df$result %in% c("WD", "DL")] <- NA_character_
-  
-  real <- factor(df$result, levels = c("WD", "DL"))
-  preview <- factor(df$preview, levels = c("WD", "DL"))
-  
-  tbl <- table(Predicted = preview, Actual = real)
-  
-  if(all(dim(tbl) == c(2,2))) {
-    caret::confusionMatrix(tbl)
-  } else {
-    message("Insufficient factor levels for full confusion matrix")
-    tbl
+  if(type_arg == "binary") {
+    df <- df |> 
+      dplyr::mutate(
+        preview = dplyr::case_when(
+          home_win > draw && home_win > home_lost ~ "W",
+          TRUE ~ "DL"
+        ) |> factor(),
+        result = ifelse(result == "W", "W", "DL") |> factor()
+      ) |> 
+      dplyr::select(result, preview)
+    
+    caret::confusionMatrix(df)
   }
+  
+  if(type_arg == "three-class") {
+    df <- df |> 
+      dplyr::mutate(
+        preview = dplyr::case_when(
+          home_win > draw && home_win > home_lost ~ "W",
+          home_lost > draw && home_lost > home_win ~ "L",
+          TRUE ~ "D"
+        ) |> factor()
+      ) |> 
+      dplyr::select(result, preview)
+    
+    caret::confusionMatrix(df)
+  }
+  
+
 }
 
 #' Generate Posterior Predictive Check Plots
