@@ -27,5 +27,5 @@ test_data <- data.frame(
 )
 
 # Run with actual data
-confusion_matrix(test_data)
+confusion_matrix(test_data, "binary")
 }

@@ -81,8 +81,8 @@ generate_data <- function(num_teams, model, params, team_names = NULL) {
   model_params <- model(params, num_teams, games)
   
   # Add goals to games dataframe
-  games$goals_home <- model_params$goals_home
-  games$goals_away <- model_params$goals_away
+  games$gf <- model_params$goals_home
+  games$ga <- model_params$goals_away
   
   # Add metadata columns
   games$season <- rep('2025', nrow(games))
@@ -94,14 +94,14 @@ generate_data <- function(num_teams, model, params, team_names = NULL) {
                        "goals_home", "goals_away", "away_team", "away_index")]
   } else {
     games <- games[, c("season", "venue", "round", "home_index", 
-                       "goals_home", "goals_away", "away_index")]
+                       "gf", "ga", "away_index")]
   }
   
   games <- games |> 
     dplyr::mutate(
-      result = case_when(
-        goals_home > goals_away ~ 'W',
-        goals_home < goals_away ~ 'L',
+      result = dplyr::case_when(
+        gf > ga ~ 'W',
+        gf < ga ~ 'L',
         TRUE ~ 'D'
       ) |> factor()
     )

@@ -21,7 +21,7 @@
 #'   home_lost = c(0.2, 0.3, 0.6, 0.3, 0.5),
 #'   draw = c(0.1, 0.5, 0.1, 0.1, 0.1)
 #' )
-#' confusion_matrix(test_data)
+#' score(test_data)
 score <- function(df) {
   df$score <- NA_real_
   df$score[df$result == "W"] <- df$home_win[df$result == "W"]
@@ -168,7 +168,7 @@ real_vs_preview_goals <- function(df) {
 #' )
 #' 
 #' # Run with actual data
-#' confusion_matrix(test_data)
+#' confusion_matrix(test_data, "binary")
 confusion_matrix <- function(df, type) {
   type_arg <- match.arg(type, choices = c("binary", "three-class"))
   
@@ -176,14 +176,16 @@ confusion_matrix <- function(df, type) {
     df <- df |> 
       dplyr::mutate(
         preview = dplyr::case_when(
-          home_win > draw && home_win > home_lost ~ "W",
+          home_win > draw & home_win > home_lost ~ "W",
           TRUE ~ "DL"
         ) |> factor(),
-        result = ifelse(result == "W", "W", "DL") |> factor()
-      ) |> 
-      dplyr::select(result, preview)
+        result = dplyr::case_when(
+          result == "W" ~ "W",
+          TRUE ~ "DL"
+          ) |> factor()
+      ) 
     
-    caret::confusionMatrix(df)
+    caret::confusionMatrix(df$preview, df$result)
   }
   
   if(type_arg == "three-class") {
@@ -194,10 +196,9 @@ confusion_matrix <- function(df, type) {
           home_lost > draw && home_lost > home_win ~ "L",
           TRUE ~ "D"
         ) |> factor()
-      ) |> 
-      dplyr::select(result, preview)
+      )
     
-    caret::confusionMatrix(df)
+    caret::confusionMatrix(df$preview, df$result)
   }
   
 

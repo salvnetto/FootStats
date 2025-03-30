@@ -3,6 +3,7 @@
 export(confusion_matrix)
 export(expected_results)
 export(generate_data)
+export(generate_qmd)
 export(load_data)
 export(plots)
 export(predict)

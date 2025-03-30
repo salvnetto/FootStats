@@ -29,5 +29,5 @@ test_data <- data.frame(
   home_lost = c(0.2, 0.3, 0.6, 0.3, 0.5),
   draw = c(0.1, 0.5, 0.1, 0.1, 0.1)
 )
-confusion_matrix(test_data)
+score(test_data)
 }
