@@ -195,7 +195,8 @@ confusion_matrix <- function(df, type) {
           home_win > draw & home_win > home_lost ~ "W",
           home_lost > draw & home_lost > home_win ~ "L",
           TRUE ~ "D"
-        ) |> factor()
+        ) |> factor(),
+        result = factor(result)
       )
     
     caret::confusionMatrix(df$preview, df$result)
