@@ -30,7 +30,7 @@
 #' @export
 generate_qmd <- function(model, title, param_list, output_path) {
   fit_path <- glue::glue("results/{model}.rds")
-  df_path <- glue::glue("data/{model}.rds")
+  df_path <- glue::glue("data/{model}.xlsx")
   output_path <- glue::glue(output_path)
 
   qmd_content <- glue::glue("
