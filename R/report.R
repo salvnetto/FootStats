@@ -29,8 +29,8 @@
 #'
 #' @export
 generate_qmd <- function(model, title, param_list, output_path) {
-  fit_path <- glue::glue("results/{model}.rds")
-  df_path <- glue::glue("data/{model}.xlsx")
+  fit_path <- glue::glue("../results/{model}.rds")
+  df_path <- glue::glue("../data/{model}.xlsx")
   output_path <- glue::glue(output_path)
 
   qmd_content <- glue::glue("
@@ -60,7 +60,7 @@ library(readxl)
 
 fit = readRDS(\"{fit_path}\")
 draws = posterior::as_draws_rvars(fit$draws())
-df = readRDS(\"{df_path}\")
+df = read_excel(\"{df_path}\")
 ```
 
 ```{{r}}

@@ -192,8 +192,8 @@ confusion_matrix <- function(df, type) {
     df <- df |> 
       dplyr::mutate(
         preview = dplyr::case_when(
-          home_win > draw && home_win > home_lost ~ "W",
-          home_lost > draw && home_lost > home_win ~ "L",
+          home_win > draw & home_win > home_lost ~ "W",
+          home_lost > draw & home_lost > home_win ~ "L",
           TRUE ~ "D"
         ) |> factor()
       )
