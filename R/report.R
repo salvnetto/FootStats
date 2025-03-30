@@ -34,96 +34,122 @@ generate_qmd <- function(model, title, param_list, output_path) {
   output_path <- glue::glue(output_path)
 
   qmd_content <- glue::glue("
-    ---
-    title: \"{title}\"
-    format: html
-    ---
-    
-    ```{{r setup}}
-    #| output: false
-    #| echo: false
-    #| warning: false
-    
-    library(tidyverse)
-    library(cmdstanr)
-    library(posterior)
-    library(bayesplot)
-    library(shinystan)
-    library(FootStats)
-    library(readxl)
-    ```
-    
-    ```{{r}}
-    #| output: false
-    #| echo: false
-    #| warning: false
-    
-    fit = readRDS(\"{fit_path}\")
-    draws = posterior::as_draws_rvars(fit$draws())
-    df = readRDS(\"{df_path}\")
-    ```
-    
-    ```{{r}}
-    fit$summary(list({paste(shQuote(param_list, type='cmd'), collapse=', ')}))
-    ```
-    
-    # Convergencia
-    
-    ```{{r traceplot}}
-    #| output: true
-    #| echo: false
-    #| warning: false
-    
-    plots_list <- list({paste0('mcmc_trace(draws, pars = c(\"', param_list, '\"))', collapse=', ')})
-    bayesplot_grid(plots = plots_list)
-    ```
-    
-    ```{{r rhat and neff}}
-    #| output: true
-    #| echo: false
-    #| warning: false
-    
-    #extract
-    rhats = bayesplot::rhat(fit)
-    ratios_cp = neff_ratio(fit)
-    #plot
-    prhat = mcmc_rhat_hist(rhats)
-    pnepp = mcmc_neff_hist(ratios_cp)
-    bayesplot_grid(plots = list(prhat, pnepp))
-    ```
-    
-    ```{{r acf}}
-    #| output: true
-    #| echo: false
-    #| warning: false
-    
-    acf_plots <- list({paste0('mcmc_acf(draws, pars = c(\"', param_list, '\"))', collapse=', ')})
-    bayesplot_grid(plots = acf_plots)
-    ```
-    
-    # Metricas
-    
-    ```{{r}}
-    #| output: true
-    #| echo: true
-    #| warning: false
-    
-    FootStats::score(df)
-    FootStats::expected_results(df)
-    FootStats::expected_results(df, favorite = 'home')
-    FootStats::expected_results(df, favorite = 'away')
-    FootStats::real_vs_preview_goals(df)
-    FootStats::confusion_matrix(df, type = \"binary\")
-    FootStats::confusion_matrix(df, type = \"three-class\")
-    ```
-    
-    ```{{r}}
-    #| output: true
-    #| echo: false
-    #| warning: false
-    
-    FootStats::plots(draws, df)
-    ```
+---
+title: \"{title}\"
+format: html
+---
+
+```{{r setup}}
+#| output: false
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(cmdstanr)
+library(posterior)
+library(bayesplot)
+library(shinystan)
+library(FootStats)
+library(readxl)
+```
+
+```{{r}}
+#| output: false
+#| echo: false
+#| warning: false
+
+fit = readRDS(\"{fit_path}\")
+draws = posterior::as_draws_rvars(fit$draws())
+df = readRDS(\"{df_path}\")
+```
+
+```{{r}}
+fit$summary(list({paste(shQuote(param_list, type='cmd'), collapse=', ')}))
+```
+
+# Convergencia
+
+```{{r traceplot}}
+#| output: true
+#| echo: false
+#| warning: false
+
+#ataque
+att1 = mcmc_trace(draws, pars = c('att[1]'))
+att2 = mcmc_trace(draws, pars = c('att[7]'))
+att3 = mcmc_trace(draws, pars = c('att[12]'))
+att4 = mcmc_trace(draws, pars = c('att[20]'))
+bayesplot_grid(plots = list(att1, att2, att3, att4))
+#defesa
+def1 = mcmc_trace(draws, pars = c('def[1]'))
+def2 = mcmc_trace(draws, pars = c('def[7]'))
+def3 = mcmc_trace(draws, pars = c('def[12]'))
+def4 = mcmc_trace(draws, pars = c('def[20]'))
+bayesplot_grid(plots = list(def1, def2, def3, def4))
+#outros
+plots_list <- list({paste0('mcmc_trace(draws, pars = c(\"', param_list, '\"))', collapse=', ')})
+bayesplot_grid(plots = plots_list)
+```
+
+```{{r rhat and neff}}
+#| output: true
+#| echo: false
+#| warning: false
+
+#extract
+rhats = bayesplot::rhat(fit)
+ratios_cp = neff_ratio(fit)
+#plot
+prhat = mcmc_rhat_hist(rhats)
+pnepp = mcmc_neff_hist(ratios_cp)
+bayesplot_grid(plots = list(prhat, pnepp))
+```
+
+```{{r acf}}
+#| output: true
+#| echo: false
+#| warning: false
+
+#ataque
+att1 = mcmc_acf(draws, pars = c('att[1]'))
+att2 = mcmc_acf(draws, pars = c('att[7]'))
+att3 = mcmc_acf(draws, pars = c('att[12]'))
+att4 = mcmc_acf(draws, pars = c('att[20]'))
+bayesplot_grid(plots = list(att1, att2, att3, att4))
+#defesa
+def1 = mcmc_acf(draws, pars = c('def[1]'))
+def2 = mcmc_acf(draws, pars = c('def[7]'))
+def3 = mcmc_acf(draws, pars = c('def[12]'))
+def4 = mcmc_acf(draws, pars = c('def[20]'))
+bayesplot_grid(plots = list(def1, def2, def3, def4))
+#outros
+acf_plots <- list({paste0('mcmc_acf(draws, pars = c(\"', param_list, '\"))', collapse=', ')})
+bayesplot_grid(plots = acf_plots)
+```
+
+# Metricas
+
+```{{r}}
+#| output: true
+#| echo: true
+#| warning: false
+
+FootStats::score(df)
+FootStats::expected_results(df)
+FootStats::expected_results(df, favorite = 'home')
+FootStats::expected_results(df, favorite = 'away')
+FootStats::real_vs_preview_goals(df)
+FootStats::confusion_matrix(df, type = \"binary\")
+FootStats::confusion_matrix(df, type = \"three-class\")
+```
+
+```{{r}}
+#| output: true
+#| echo: false
+#| warning: false
+
+FootStats::plots(draws, df)
+```
   ")
                                        
   writeLines(qmd_content, output_path)
