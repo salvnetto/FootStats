@@ -185,7 +185,7 @@ confusion_matrix <- function(df, type) {
           ) |> factor()
       ) 
     
-    caret::confusionMatrix(df$preview, df$result)
+    return(caret::confusionMatrix(df$preview, df$result))
   }
   
   if(type_arg == "three-class") {
@@ -199,7 +199,7 @@ confusion_matrix <- function(df, type) {
         result = factor(result)
       )
     
-    caret::confusionMatrix(df$preview, df$result)
+    return(caret::confusionMatrix(df$preview, df$result))
   }
   
 
