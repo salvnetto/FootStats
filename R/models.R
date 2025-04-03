@@ -42,7 +42,7 @@ fs_poisson_covariates <- function(params, num_teams, games) {
     stop("Missing required parameters: ", paste(missing, collapse = ", "))
   }
   
-  X = matrix(stats::rgamma(length(games), scale = 1, shape = 1), length(games), 1)
+  X = matrix(stats::rgamma(dim(games)[1], scale = 1, shape = 1), dim(games)[1], 1)
   
   intercept = params$intercept
   home = params$home
