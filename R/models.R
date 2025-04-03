@@ -47,14 +47,14 @@ fs_poisson_covariates <- function(params, num_teams, games) {
   intercept = params$intercept
   home = params$home
   beta = params$beta
-  att_raw = stats::rnorm(num_teams, params$mu_att, params$sd_att)
-  def_raw = stats::rnorm(num_teams, params$mu_def, params$sd_def)
+  att_raw = stats::rnorm(num_teams, 0, params$sd_att)
+  def_raw = stats::rnorm(num_teams, 0, params$sd_def)
   
   att = att_raw - mean(att_raw)
   def = def_raw - mean(def_raw)
   
-  theta_home = att[games$home_index] - def[games$away_index] + home + X*beta
-  theta_away = att[games$away_index] - def[games$home_index] + X*beta
+  theta_home = intercept + att[games$home_index] - def[games$away_index] + X*beta + home 
+  theta_away = intercept + att[games$away_index] - def[games$home_index] + X*beta
   
   goals_home = stats::rpois(nrow(games), exp(theta_home))
   goals_away = stats::rpois(nrow(games), exp(theta_away))
