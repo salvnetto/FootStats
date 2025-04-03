@@ -32,7 +32,7 @@
 #'
 #' @importFrom posterior draws_of
 #' @export
-predict <- function(test_data, draws) {
+predict_results <- function(test_data, draws) {
   test_data$home_win <- NA
   test_data$draw <- NA
   test_data$home_lost <- NA
