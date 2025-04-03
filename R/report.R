@@ -41,7 +41,7 @@ format:
     embed-resources: true
 ---
 
-```{r setup}
+```{{r setup}}
 #| output: false
 #| echo: false
 #| warning: false
@@ -55,7 +55,7 @@ library(FootStats)
 library(readxl)
 ```
 
-```{r}
+```{{r}}
 #| output: false
 #| echo: false
 #| warning: false
@@ -65,13 +65,13 @@ draws = posterior::as_draws_rvars(fit$draws())
 df = read_excel(\"{df_path}\")
 ```
 
-```{r}
+```{{r}}
 fit$summary(list({paste(shQuote(param_list, type='cmd'), collapse=', ')}))
 ```
 
 # Convergencia
 
-```{r traceplot}
+```{{r traceplot}}
 #| output: true
 #| echo: false
 #| warning: false
@@ -93,7 +93,7 @@ plots_list <- list({paste0('mcmc_trace(draws, pars = c(\"', param_list, '\"))', 
 bayesplot_grid(plots = plots_list)
 ```
 
-```{r rhat and neff}
+```{{r rhat and neff}}
 #| output: true
 #| echo: false
 #| warning: false
@@ -107,7 +107,7 @@ pnepp = mcmc_neff_hist(ratios_cp)
 bayesplot_grid(plots = list(prhat, pnepp))
 ```
 
-```{r acf}
+```{{r acf}}
 #| output: true
 #| echo: false
 #| warning: false
@@ -131,7 +131,7 @@ bayesplot_grid(plots = acf_plots)
 
 # Metricas
 
-```{r}
+```{{r}}
 #| output: true
 #| echo: true
 #| warning: false
@@ -145,7 +145,7 @@ FootStats::confusion_matrix(df, type = \"binary\")
 FootStats::confusion_matrix(df, type = \"three-class\")
 ```
 
-```{r}
+```{{r}}
 #| output: true
 #| echo: false
 #| warning: false
