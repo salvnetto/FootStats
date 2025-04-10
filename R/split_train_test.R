@@ -29,7 +29,7 @@ split_train_test <- function(data, season, rounds_train, include_seasons = NULL,
   available_seasons <- unique(as.character(data$season))
   season_filter <- match.arg(as.character(season), available_seasons)
   if (!is.null(include_seasons)) {
-    include_season_filter <- match.arg(include_seasons, available_seasons)
+    include_season_filter <- available_seasons[available_seasons %in% include_seasons]
     all_seasons <- c(season_filter, include_season_filter)
   } else {
     all_seasons <- season_filter
