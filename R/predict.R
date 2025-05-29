@@ -38,28 +38,34 @@ predict_results <- function(test_data, draws) {
   test_data$home_lost <- NA
   test_data$lambda_home <- NA
   test_data$lambda_away <- NA
-
+  
+  # Selecting relevant columns from test_data
+  test_data <- test_data %>%
+    arrange(round) %>%
+    select(comp,
+           season,
+           date,
+           round,
+           team_name,
+           opponent,
+           result,
+           gf,
+           ga,
+           home_win:lambda_away)
+  
   for (i in 1:nrow(test_data)) {
-    x <- posterior::draws_of(draws$gf_new)[, i]
-    y <- posterior::draws_of(draws$ga_new)[, i]
-
-    n_preds <- length(x)
-
-    test_data$home_win[i] <- sum(x > y) / n_preds
-    test_data$draw[i] <- sum(x == y) / n_preds
-    test_data$home_lost[i] <- sum(x < y) / n_preds
-
-    test_data$lambda_home[i] <- mean(exp(posterior::draws_of(draws$theta1_new)[, i]))
-    test_data$lambda_away[i] <- mean(exp(posterior::draws_of(draws$theta2_new)[, i]))
+    x <- posterior::draws_of(draws$x_pred)[, i]  # Posterior samples for X (home), length 10000
+    y <- posterior::draws_of(draws$y_pred)[, i]  # Posterior samples for Y (away), length 10000
+    n_preds <- length(x)                         # Number of samples
+    
+    test_data$home_win[i] <- sum(x > y) / n_preds   # P(X > Y): Probability of home win
+    test_data$draw[i] <- sum(x == y) / n_preds      # P(X == Y): Probability of draw
+    test_data$home_lost[i] <- sum(x < y) / n_preds  # P(X < Y): Probability of home loss
+    
+    test_data$lambda_home[i] <- mean(x)  # Expected goals (home)
+    test_data$lambda_away[i] <- mean(y)  # Expected goals (away)
+    
   }
-
-  max_vals <- pmax(test_data$home_win, test_data$draw, test_data$home_lost)
-  test_data$result_predicted <- ifelse(
-    test_data$home_win == max_vals, "W",
-    ifelse(test_data$draw == max_vals, "D", "L")
-  )
-
-  test_data$success <- as.integer(test_data$result_predicted == test_data$result)
-
+  
   return(test_data)
 }
