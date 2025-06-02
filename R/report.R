@@ -153,7 +153,7 @@ FootStats::expected_results(df, favorite = 'away')
 FootStats::real_vs_preview_goals(df)
 FootStats::confusion_matrix(df, type = \"binary\")
 FootStats::confusion_matrix(df, type = \"three-class\")
-FootStats::predicted_results(df)
+FootStats::table_results(df)
 ```
 
 ```{{r}}
