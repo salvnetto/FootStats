@@ -257,10 +257,10 @@ plots <- function(draws, df_test) {
     stop("df_test must contain 'gf' and 'ga' columns")
   }
   
-  gf_rep <- posterior::draws_of(draws$gf_new)
+  gf_rep <- posterior::draws_of(draws$y1_pred)
   gf_obs <- df_test$gf
   
-  ga_rep <- posterior::draws_of(draws$ga_new)
+  ga_rep <- posterior::draws_of(draws$y2_pred)
   ga_obs <- df_test$ga
   
   pgf <- bayesplot::ppc_bars(gf_obs, gf_rep) + 
