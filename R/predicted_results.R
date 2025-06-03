@@ -1,4 +1,4 @@
-predicted_results <- function(df){
+table_results <- function(df){
   
   # Selecting relevant columns from test_data
   df <- df %>%
