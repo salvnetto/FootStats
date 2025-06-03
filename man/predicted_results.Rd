@@ -4,7 +4,7 @@
 \alias{predicted_results}
 \title{Predict Match Outcomes Using Posterior Draws}
 \usage{
-predicted_results(df)
+predicted_results(test_data, draws)
 }
 \arguments{
 \item{test_data}{A data frame containing match data. Must include columns:
