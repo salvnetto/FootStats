@@ -1,6 +1,6 @@
 Package: FootStats
 Title: Datasets and Predictive Models for Football
-Version: 2.0.3
+Version: 2.0.4
 Authors@R: 
     person("Salvador", "Netto", , "salvv.netto@gmail.com", role = c("aut", "cre"))
 Description: The FootStats package facilitates game outcome analysis using statistical learning techniques. It is designed for modeling and predicting football match results based on various statistical features.
