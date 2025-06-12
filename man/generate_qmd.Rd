@@ -4,7 +4,16 @@
 \alias{generate_qmd}
 \title{Generate a Quarto Markdown (.qmd) File for Bayesian Model Analysis}
 \usage{
-generate_qmd(model, title, param_list, output_path)
+generate_qmd(
+  model,
+  title,
+  league,
+  param_list,
+  params_extra,
+  pasta_arquivo,
+  nome_arquivo,
+  output_path
+)
 }
 \arguments{
 \item{model}{A character string specifying the model name.

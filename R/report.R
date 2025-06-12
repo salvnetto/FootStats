@@ -28,142 +28,15 @@
 #' }
 #'
 #' @export
-generate_qmd <- function(model,
-                         title,
-                         param_list,
-                         output_path) {
+generate_qmd <- function (model, title, league, param_list, params_extra, pasta_arquivo, nome_arquivo, output_path)
+{
   
-  fit_path <- here::here(paste0("results/", model, "/", model, "(",league,")/", model, "(",league,").rds"))
-  df_path <- here::here(paste0("results/", model, "/", model, "(",league,")/", model, "(",league,").xlsx"))
+  fit_path <- here::here(paste0(pasta_arquivo, "/", nome_arquivo, ".rds"))
+  df_path <- here::here(paste0(pasta_arquivo, "/", nome_arquivo, ".xlsx"))
+  
   output_path <- glue::glue(output_path)
   
-  qmd_content <- glue::glue("
----
-title: \"{title}\"
-format:
-  html:
-    embed-resources: true
----
-
-```{{r setup}}
-#| output: false
-#| echo: false
-#| warning: false
-
-library(tidyverse)
-library(cmdstanr)
-library(posterior)
-library(bayesplot)
-library(shinystan)
-library(FootStats)
-library(readxl)
-```
-
-```{{r}}
-#| output: false
-#| echo: false
-#| warning: false
-
-fit = readRDS(\"{fit_path}\")
-draws = posterior::as_draws_rvars(fit$draws())
-df = read_excel(\"{df_path}\")
-```
-
-```{{r}}
-fit$summary(list({paste(shQuote(param_list, type='cmd'), collapse=', ')}))
-```
-
-# Convergencia
-
-```{{r traceplot}}
-#| output: true
-#| echo: false
-#| warning: false
-
-#ataque
-sample_att <- sample(1:20,4)
-att1 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[1], ']')))
-att2 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[2], ']')))
-att3 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[3], ']')))
-att4 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[4], ']')))
-bayesplot_grid(plots = list(att1, att2, att3, att4))
-
-#defesa
-sample_def <- sample(1:20,4)
-def1 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[1], ']')))
-def2 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[2], ']')))
-def3 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[3], ']')))
-def4 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[4], ']')))
-bayesplot_grid(plots = list(def1, def2, def3, def4))
-
-#outros
-plots_list <- list({paste0('mcmc_trace(draws, pars = c(\"', param_list, '\"))', collapse=', ')})
-bayesplot_grid(plots = plots_list)
-```
-
-```{{r rhat and neff}}
-#| output: true
-#| echo: false
-#| warning: false
-
-#extract
-rhats = bayesplot::rhat(fit)
-ratios_cp = neff_ratio(fit)
-#plot
-prhat = mcmc_rhat_hist(rhats)
-pnepp = mcmc_neff_hist(ratios_cp)
-bayesplot_grid(plots = list(prhat, pnepp))
-```
-
-```{{r acf}}
-#| output: true
-#| echo: false
-#| warning: false
-
-#ataque
-att1 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[1], ']')))
-att2 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[2], ']')))
-att3 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[3], ']')))
-att4 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[4], ']')))
-bayesplot_grid(plots = list(att1, att2, att3, att4))
-
-#defesa
-def1 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[1], ']')))
-def2 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[2], ']')))
-def3 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[3], ']')))
-def4 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[4], ']')))
-bayesplot_grid(plots = list(def1, def2, def3, def4))
-
-#outros
-acf_plots <- list({paste0('mcmc_acf(draws, pars = c(\"', param_list, '\"))', collapse=', ')})
-bayesplot_grid(plots = acf_plots)
-```
-
-# Metricas
-
-```{{r}}
-#| output: true
-#| echo: true
-#| warning: false
-
-FootStats::score(df)
-FootStats::expected_results(df)
-FootStats::expected_results(df, favorite = 'home')
-FootStats::expected_results(df, favorite = 'away')
-FootStats::real_vs_preview_goals(df)
-FootStats::confusion_matrix(df, type = \"binary\")
-FootStats::confusion_matrix(df, type = \"three-class\")
-FootStats::table_results(df)
-```
-
-```{{r}}
-#| output: true
-#| echo: false
-#| warning: false
-
-FootStats::plots(draws, df)
-```
-  ")
+  qmd_content <- glue::glue("\n---\ntitle: \"{title}\"\nformat:\n  html:\n    embed-resources: true\n---\n\n```{{r setup}}\n#| output: false\n#| echo: false\n#| warning: false\n\nlibrary(tidyverse)\nlibrary(cmdstanr)\nlibrary(posterior)\nlibrary(bayesplot)\nlibrary(shinystan)\nlibrary(FootStats)\nlibrary(readxl)\n```\n\n```{{r}}\n#| output: false\n#| echo: false\n#| warning: false\n\nfit = readRDS(\"{fit_path}\")\ndraws = posterior::as_draws_rvars(fit$draws())\ndf = read_excel(\"{df_path}\")\n```\n\n```{{r}}\nfit$summary(list({paste(shQuote(param_list, type='cmd'), collapse=', ')}))\n```\n\n# Convergencia\n\n```{{r traceplot}}\n#| output: true\n#| echo: false\n#| warning: false\n\n#ataque\nsample_att <- sample(1:20,4)\natt1 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[1], ']')))\natt2 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[2], ']')))\natt3 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[3], ']')))\natt4 = mcmc_trace(draws, pars = c(paste0('att[',sample_att[4], ']')))\nbayesplot_grid(plots = list(att1, att2, att3, att4))\n\n#defesa\nsample_def <- sample(1:20,4)\ndef1 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[1], ']')))\ndef2 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[2], ']')))\ndef3 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[3], ']')))\ndef4 = mcmc_trace(draws, pars = c(paste0('def[',sample_def[4], ']')))\nbayesplot_grid(plots = list(def1, def2, def3, def4))\n\n#outros\nplots_list <- list({paste0('mcmc_trace(draws, pars = c(\"', param_list, '\"))', collapse=', ')})\nbayesplot_grid(plots = plots_list)\n```\n\n```{{r rhat and neff}}\n#| output: true\n#| echo: false\n#| warning: false\n\n#extract\nrhats = bayesplot::rhat(fit)\nratios_cp = neff_ratio(fit)\n#plot\nprhat = mcmc_rhat_hist(rhats)\npnepp = mcmc_neff_hist(ratios_cp)\nbayesplot_grid(plots = list(prhat, pnepp))\n```\n\n```{{r acf}}\n#| output: true\n#| echo: false\n#| warning: false\n\n#ataque\natt1 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[1], ']')))\natt2 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[2], ']')))\natt3 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[3], ']')))\natt4 = mcmc_acf(draws, pars = c(paste0('att[',sample_att[4], ']')))\nbayesplot_grid(plots = list(att1, att2, att3, att4))\n\n#defesa\ndef1 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[1], ']')))\ndef2 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[2], ']')))\ndef3 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[3], ']')))\ndef4 = mcmc_acf(draws, pars = c(paste0('def[',sample_def[4], ']')))\nbayesplot_grid(plots = list(def1, def2, def3, def4))\n\n#outros\nacf_plots <- list({paste0('mcmc_acf(draws, pars = c(\"', param_list, '\"))', collapse=', ')})\nbayesplot_grid(plots = acf_plots)\n```\n\n# Metricas\n\n```{{r}}\n#| output: true\n#| echo: true\n#| warning: false\n\nFootStats::score(df)\nFootStats::expected_results(df)\nFootStats::expected_results(df, favorite = 'home')\nFootStats::expected_results(df, favorite = 'away')\nFootStats::real_vs_preview_goals(df)\nFootStats::confusion_matrix(df, type = \"binary\")\nFootStats::confusion_matrix(df, type = \"three-class\")\nFootStats::table_results(df)\n```\n\n```{{r}}\n#| output: true\n#| echo: false\n#| warning: false\n\nFootStats::plots(draws, df)\n```\n  ")
   
   writeLines(qmd_content, output_path)
   message("Quarto file saved to: ", output_path)
