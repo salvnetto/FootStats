@@ -46,6 +46,5 @@ table_results <- function(df){
   return(df %>%
            flextable() %>%
            align(align = "center", part = "all") %>%
-           fix_border_issues() %>%
-           fontsize(part = 'all', size = 8))
+           fix_border_issues())
 }
