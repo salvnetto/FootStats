@@ -44,7 +44,8 @@ table_results <- function(df){
   df <- df[c(2,7,8,16,22,24,25,28,36,39),]
   
   return(df %>%
-           flextable() %>%
-           align(align = "center", part = "all") %>%
-           fix_border_issues())
+           flextable::flextable() %>%
+           flextable::align(align = "center", part = "all") %>%
+           flextable::fix_border_issues() |> 
+           flextable::fontsize(part = 'all', size = 8))
 }
