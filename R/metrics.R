@@ -250,7 +250,7 @@ confusion_matrix <- function(df, type) {
 #' @importFrom bayesplot ppc_bars ppc_stat bayesplot_grid
 plots <- function(draws, df_test) {
   # Input validation
-  if(!"gf_new" %in% names(draws) || !"ga_new" %in% names(draws)) {
+  if(!"y1_pred" %in% names(draws) || !"y2_pred" %in% names(draws)) {
     stop("draws must contain gf_new and ga_new matrices")
   }
   if(!all(c("gf", "ga") %in% colnames(df_test))) {
